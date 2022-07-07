@@ -54,6 +54,38 @@ app.put('/api/games/:id', async (req, res) => {
   }
 });
 
+app.post('/api/games/search', async (req, res) => {
+  const { name, platform } = req.body;
+  const Sequelize = require('sequelize');
+
+  const Op = Sequelize.Op;
+
+
+  let search_result;
+  if (platform !== "") {
+    search_result = await db.Game.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${name}%`
+        },
+        platform: platform
+      }
+    });
+  } else {
+    search_result = await db.Game.findAll({
+      where: {
+        name: {
+          [Op.like]: `%${name}%`
+        }
+      }
+    });
+  }
+  search_result.forEach(game => {
+    console.log(game.name);
+  });
+  return res.status(200).send(search_result)
+})
+
 app.listen(3000, () => {
   console.log('Server is up on port 3000');
 });
