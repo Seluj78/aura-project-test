@@ -25,6 +25,11 @@
       <search-games title="Search Games" @search-games-db="searchGames" :search="search" />
     </div>
   </section>
+  <section class="section section-container" style="padding-bottom: 10px;">
+    <div class="box">
+      <populate-db title="Populate DB" @populate-db-db="populateDB" />
+    </div>
+  </section>
   <section class="section section-container" style="padding-top: 24px; padding-bottom: 5px;">
     <h2 class="title">Games</h2>
     <game v-for="(game, index) in games"
@@ -70,64 +75,64 @@
     },
     template: `
       <form class="form" @submit.prevent="save">
-        <h3 class='subtitle'>{{ title }}</h3>
-        <div class="field">
-            <label>Publisher Id</label>
-            <div class="control">
-              <input class="input" type="text" v-model="publisherId">
-            </div>
+      <h3 class='subtitle'>{{ title }}</h3>
+      <div class="field">
+        <label>Publisher Id</label>
+        <div class="control">
+          <input class="input" type="text" v-model="publisherId">
         </div>
-        <div class="field">
-            <label>Name</label>
-            <div class="control">
-              <input class="input" type="text" v-model="name">
-            </div>
+      </div>
+      <div class="field">
+        <label>Name</label>
+        <div class="control">
+          <input class="input" type="text" v-model="name">
         </div>
-        <div class="field">
-            <label>Platform</label>
-            <div class="control">
-              <div class="control">
-              <input type="radio" id="ios" v-model="platform" value="ios">
-              <label for="ios">iOS</label>
-              <br>
-              <input type="radio" id="android" v-model="platform" value="android">
-              <label for="android">Android</label>
-            </div>
-            </div>
+      </div>
+      <div class="field">
+        <label>Platform</label>
+        <div class="control">
+          <div class="control">
+            <input type="radio" id="ios" v-model="platform" value="ios">
+            <label for="ios">iOS</label>
+            <br>
+            <input type="radio" id="android" v-model="platform" value="android">
+            <label for="android">Android</label>
+          </div>
         </div>
-        <div class="field">
-            <label>Store Id</label>
-            <div class="control">
-              <input class="input" type="text" v-model="storeId">
-            </div>
+      </div>
+      <div class="field">
+        <label>Store Id</label>
+        <div class="control">
+          <input class="input" type="text" v-model="storeId">
         </div>
-        <div class="field">
-            <label>Bundle Id</label>
-            <div class="control">
-              <input class="input" type="text" v-model="bundleId">
-            </div>
+      </div>
+      <div class="field">
+        <label>Bundle Id</label>
+        <div class="control">
+          <input class="input" type="text" v-model="bundleId">
         </div>
-        <div class="field">
-            <label>App Version</label>
-            <div class="control">
-              <input class="input" type="text" v-model="appVersion">
-            </div>
+      </div>
+      <div class="field">
+        <label>App Version</label>
+        <div class="control">
+          <input class="input" type="text" v-model="appVersion">
         </div>
-        <div class="field">
-            <label>Is Published</label>
-            <div class="control">
-              <input type="radio" id="one" v-model="isPublished" v-bind:value="true">
-              <label for="one">Yes</label>
-              <br>
-              <input type="radio" id="two" v-model="isPublished" v-bind:value="false">
-              <label for="two">No</label>
-            </div>
+      </div>
+      <div class="field">
+        <label>Is Published</label>
+        <div class="control">
+          <input type="radio" id="one" v-model="isPublished" v-bind:value="true">
+          <label for="one">Yes</label>
+          <br>
+          <input type="radio" id="two" v-model="isPublished" v-bind:value="false">
+          <label for="two">No</label>
         </div>
-        <div class="field">
-            <div class="control">
-              <button class="button is-success">Save</button>
-            </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <button class="button is-success">Save</button>
         </div>
+      </div>
       </form>
     `
   }
@@ -150,19 +155,19 @@
     },
     template: `
       <div class="card">
-        <header class="card-header">
-          <p @click="showDetail = !showDetail" class="card-header-title">
-            [{{ game.platform }}] - {{ game.name }}
-          </p>
-          <a class="card-header-icon" @click.stop="deleteGame(game)">
+      <header class="card-header">
+        <p @click="showDetail = !showDetail" class="card-header-title">
+          [{{ game.platform }}] - {{ game.name }}
+        </p>
+        <a class="card-header-icon" @click.stop="deleteGame(game)">
             <span class="icon">
               <i class="fa fa-trash"></i>
             </span>
-          </a>
-        </header>
-        <div v-show="showDetail" class="card-content">
-            <add-update-game title="Details" :game="game" @save-game="onAddOrUpdateGame" />
-        </div>
+        </a>
+      </header>
+      <div v-show="showDetail" class="card-content">
+        <add-update-game title="Details" :game="game" @save-game="onAddOrUpdateGame" />
+      </div>
       </div>
     `
   }
@@ -178,38 +183,55 @@
       }
     },
     template: `
-       <form class="form" @submit.prevent="searchGames">
-         <h2 class="title">Search Games</h2>
-         <div class="field">
-          <label>Name</label>
+      <form class="form" @submit.prevent="searchGames">
+      <h2 class="title">Search Games</h2>
+      <div class="field">
+        <label>Name</label>
+        <div class="control">
+          <input class="input" type="text" v-model="name">
+        </div>
+      </div>
+      <div class="field">
+        <label>Platform</label>
+        <div class="control">
           <div class="control">
-            <input class="input" type="text" v-model="name">
+            <select v-model="platform" class="input">
+              <option value="">All</option>
+              <option>ios</option>
+              <option>android</option>
+            </select>
           </div>
         </div>
-        <div class="field">
-          <label>Platform</label>
-          <div class="control">
-            <div class="control">
-              <select v-model="platform" class="input">
-                <option value="">All</option>
-                <option>ios</option>
-                <option>android</option>
-              </select>
-            </div>
-          </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <button class="button is-success">Search</button>
         </div>
-        <div class="field">
-          <div class="control">
-            <button class="button is-success">Search</button>
-          </div>
-        </div>
+      </div>
       </form>
+    `
+  }
+
+  const PopulateDB = {
+    methods: {
+      populateDB() {
+        return axios.post('http://localhost:3000/api/games/populate', )
+          .then((response) => {
+            console.log("DB Populated")
+          })
+      }
+    },
+    template: `
+      <div>
+      <h2 class="title">Populate DB</h2>
+      <button class="button is-success" @click="populateDB()">Populate</button>
+      </div>
     `
   }
 
   new Vue({
     el: '#app',
-    components: { game: Game, 'add-update-game': AddUpdateGame, 'search-games': Search },
+    components: { game: Game, 'add-update-game': AddUpdateGame, 'search-games': Search, 'populate-db': PopulateDB },
     data: {
       games: [],
       search: [],
@@ -225,43 +247,43 @@
       },
       addGame (game) {
         return axios.post(this.apiURL, game)
-          .then((response) => {
-            const copy = this.games.slice()
-            copy.push(response.data)
-            this.games = copy
-          })
+                .then((response) => {
+                  const copy = this.games.slice()
+                  copy.push(response.data)
+                  this.games = copy
+                })
       },
       updateGame (game) {
         return axios.put(`${this.apiURL}/${game.id}`, game)
-          .then((response) => {
-            const copy = this.games.slice()
-            const idx = copy.findIndex((c) => c.id === response.data.id)
-            copy[idx] = response.data
-            this.games = copy
-          })
+                .then((response) => {
+                  const copy = this.games.slice()
+                  const idx = copy.findIndex((c) => c.id === response.data.id)
+                  copy[idx] = response.data
+                  this.games = copy
+                })
       },
       deleteGame (game) {
         console.log('deleting', game)
         return axios.delete(`${this.apiURL}/${game.id}`)
-          .then((response) => {
-            let copy = this.games.slice()
-            const idx = copy.findIndex((c) => c.id === response.data.id)
-            copy.splice(idx, 1)
-            this.games = copy
-          })
+                .then((response) => {
+                  let copy = this.games.slice()
+                  const idx = copy.findIndex((c) => c.id === response.data.id)
+                  copy.splice(idx, 1)
+                  this.games = copy
+                })
       },
       searchGames (search) {
         return axios.post(`${this.apiURL}/search`, search)
-          .then((response) => {
-            this.games = response.data
-          })
+                .then((response) => {
+                  this.games = response.data
+                })
       }
     },
     beforeMount () {
       axios.get(this.apiURL)
-        .then((response) => {
-          this.games = response.data
-        })
+              .then((response) => {
+                this.games = response.data
+              })
     }
   })
 

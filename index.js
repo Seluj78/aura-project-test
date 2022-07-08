@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./models');
+const axios = require('axios')
+const Sequelize = require('sequelize');
 
 const app = express();
 
@@ -56,7 +58,6 @@ app.put('/api/games/:id', async (req, res) => {
 
 app.post('/api/games/search', async (req, res) => {
   const { name, platform } = req.body;
-  const Sequelize = require('sequelize');
 
   const Op = Sequelize.Op;
 
@@ -85,6 +86,39 @@ app.post('/api/games/search', async (req, res) => {
   });
   return res.status(200).send(search_result)
 })
+
+app.post('/api/games/populate', async (req, res) => {
+  let android_games = await axios.get('https://interview-marketing-eng-dev.s3.eu-west-1.amazonaws.com/android.top100.json')
+  android_games.data.flat().forEach(game => {
+    const isPublished = new Date(game["release_date"]).getTime() > new Date().getTime()
+    db.Game.create({
+      publisherId: game.publisher_id,
+      name: game.name,
+      platform: game.os,
+      storeId: game.appId,
+      bundleId: game.bundle_id,
+      appVersion: game.version,
+      isPublished
+
+    })
+  });
+  let ios_games = await axios.get('https://interview-marketing-eng-dev.s3.eu-west-1.amazonaws.com/ios.top100.json')
+  ios_games.data.flat().forEach(game => {
+    const isPublished = new Date(game["release_date"]).getTime() > new Date().getTime()
+    db.Game.create({
+      publisherId: game.publisher_id,
+      name: game.name,
+      platform: game.os,
+      storeId: game.appId,
+      bundleId: game.bundle_id,
+      appVersion: game.version,
+      isPublished
+
+    })
+  });
+  return res.status(200)
+})
+
 
 app.listen(3000, () => {
   console.log('Server is up on port 3000');

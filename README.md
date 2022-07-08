@@ -63,13 +63,31 @@ Many other applications will use consume this API.
 We are planning to put this project in production. According to you, what are the missing pieces to make this project production ready? 
 Please elaborate an action plan.
 
+---
+This project is clearly missing separation of frontend and backend. As well as tests, frontend tests, CI/CD to lint code etc...
+This project should also be more documented. Either with a postman or swagger. 
+We could also add automatic building and deployment of the frontend and backend.
+Also, add Datadog and Sentry.
+---
+
 #### Question 2:
 Let's pretend our data team is now delivering new files every day into the S3 bucket, and our service needs to ingest those files
 every day through the populate API. Could you describe a suitable solution to automate this? Feel free to propose architectural changes.
+
+---
+You could, for example, setup a trigger on AWS on new files in the bucket/file changes that would send a request to the API, passing in the body the url of the new file.
+Another way, less clean in my opinion, is to setup a cron job, either in Linux or using celery for example, that would check for new files and ingest them.
+---
+
 
 #### Question 3:
 Both the current database schema and the files dropped in the S3 bucket are not optimal.
 Can you find ways to improve them?
 
-
+---
+The files in the s3 buckets are composed of a list of list with 3 items. This should be just a flat list, making it easier to read.
+Also, why use s3, why have files in an s3 bucket ? Can't we simply ingest the data as we scrape ? If it needs to be reviewed, a staging area on the backoffice can be setup.
+As for the database, sqlite is not a production database. I would go for either a document DB like mongo if the model changes often, or postgresql on AWS RDS.
+Finally, on the Game model, a lot more can be stored on it. I would extend the model to add more fields and change the `platform` field to an enum for different platforms
+---
 
